@@ -1,0 +1,58 @@
+from flask import Blueprint, request
+from ..models.users import Users
+from resources.encrypt_pass import encrypt
+from resources import jwt as _jwt
+from ..functions.user import *
+
+auth_route = Blueprint('auth', __name__)
+
+@auth_route.post("/register")
+def register_user():
+    ''' This function is used to create a new user '''
+    try:
+
+        if 'name' not in request.json:
+            return {"Error": "Please, inform the full name!"}, 400
+        elif 'password' not in request.json:
+            return {"Error": "Please, inform the password!"}, 400
+        elif 'email' not in request.json:
+            return {"Error": "Please, informe the email!"}, 400
+        
+        full_name = request.json['name']
+        email     = request.json['email']
+        passwd    = request.json['password']
+
+        user = Users(full_name, email, encrypt(passwd))
+        return user.create_user()
+    except Exception as e:
+        return {"Error": str(e)}
+
+@auth_route.get("/login")
+def login():
+    ''' Validate the received body and return a JWT Token to the user '''
+
+    try:
+
+        if 'email' not in request.json:
+            return {"Error": "Please, inform your e-mail!"}, 400
+        elif 'password' not in request.json:
+            return {"Error": "Please, inform yout password"}, 400
+
+        email = request.json['email']
+        passwd = request.json['password']
+
+        if not valid_user_exist(email):
+            return {"Error": "User not found"}
+
+        user_info = get_user_info(email)
+
+        valid_user = valid_user_password(user_info, passwd)
+
+        if valid_user != True:
+            return valid_user
+
+        jwt = _jwt.generate(str(user_info['email'][0]), str(user_info['full_name'][0]), str(user_info['id'][0]))
+        return {"access_token": jwt}, 200
+
+    except Exception as e:
+        return {"Error": str(e)}
