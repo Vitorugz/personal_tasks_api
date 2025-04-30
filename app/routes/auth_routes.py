@@ -27,7 +27,7 @@ def register_user():
     except Exception as e:
         return {"Error": str(e)}
 
-@auth_route.get("/login")
+@auth_route.post("/login")
 def login():
     ''' Validate the received body and return a JWT Token to the user '''
 
