@@ -1,8 +1,11 @@
 import jwt
 from datetime import datetime, timedelta, timezone
+import os
+
+JWT_KEY = os.getenv('JWT_KEY')
 
 def decode_jwt(token):
-    jwt_decoded = jwt.decode(token, '4EYRgmUKOYjLRY0Xu6otDf2IVbr4XAHUoYnTDTy6JWM=', "HS256")
+    jwt_decoded = jwt.decode(token, JWT_KEY, "HS256")
     return jwt_decoded
 
 # This functions is used to generate a JWT.
@@ -15,7 +18,7 @@ def generate(email, full_name, id):
         'exp': (datetime.now(timezone.utc) + timedelta(hours=1))
     }
 
-    jwt_token = jwt.encode(payload, '4EYRgmUKOYjLRY0Xu6otDf2IVbr4XAHUoYnTDTy6JWM=', "HS256")
+    jwt_token = jwt.encode(payload, JWT_KEY, "HS256")
 
     return jwt_token
 

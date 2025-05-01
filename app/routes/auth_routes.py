@@ -2,7 +2,6 @@ from flask import Blueprint, request
 from ..models.users import Users
 from resources.encrypt_pass import encrypt
 from resources import jwt as _jwt
-from ..functions.user import *
 
 auth_route = Blueprint('auth', __name__)
 
@@ -41,12 +40,14 @@ def login():
         email = request.json['email']
         passwd = request.json['password']
 
-        if not valid_user_exist(email):
+        user = Users('', email, passwd)
+
+        if not user.valid_user_exist():
             return {"Error": "User not found"}
 
-        user_info = get_user_info(email)
+        user_info = user.get_user_info()
 
-        valid_user = valid_user_password(user_info, passwd)
+        valid_user = user.valid_user_password(user_info)
 
         if valid_user != True:
             return valid_user

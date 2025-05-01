@@ -1,11 +1,14 @@
 from resources import postgre
 from sqlalchemy import text
 import pandas as pd
+import os
+
+POSTGRE_URI = os.getenv('POSTGRE_URI_PRD')
 
 class Task:
 
     def __init__(self, title, desc, user_id):
-        postgre_uri =  'postgresql+psycopg2://app_user:app_user_2804222@127.0.0.1:5432/postgres'
+        postgre_uri =  POSTGRE_URI
 
         self.title              = title
         self.desc               = desc
