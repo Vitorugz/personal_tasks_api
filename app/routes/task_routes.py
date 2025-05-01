@@ -20,9 +20,39 @@ def create_task():
 
     return task.create_taks()
 
-    return {
-        "User_task":        user_info['id_user'],
-        "Name_user_task":   user_info['full_name'],
-        "Task_title":       task_title,
-        "Task_description": task_desc
-    }
+@task_route.get("/tasks/getAllTasks")
+@requires_auth
+def get_tasks():
+    ''' This function is used to get all tasks of a user '''
+
+    jwt = request.headers.get('Authorization')
+
+    user_info = decode_jwt(jwt)
+
+    tasks = []
+
+    task = Task('', '', user_info['id_user'])
+
+    for row in task.get_tasks().itertuples():
+        tasks.append({
+            "title": row.title,
+            "description": row.description
+        })
+
+    return tasks
+
+@task_route.delete("/task/delete")
+@requires_auth
+def delete_task():
+
+    jwt = request.headers.get('Authorization')
+    task_id = request.args.get('task_id')
+
+    if not task_id:
+        return {"Error": "Please, informe task_id"}, 400
+
+    user_info = decode_jwt(jwt)
+
+    task = Task('', '', user_info['id_user'])
+
+    return task.delete_task(task_id)
