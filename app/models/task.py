@@ -40,7 +40,7 @@ class Task:
         )
 
     def find_task(self, task_id, user_id, engine):
-
+        ''' This function is used to valid if task exist '''
         return pd.read_sql_query(
             sql=text("""
             SELECT EXISTS (
@@ -74,3 +74,52 @@ class Task:
         except Exception as e:
             return {"Error in delete task": str(e)}, 400
 
+    def update_task_title(self, task_id):
+        ''' This function is used to update a task title '''
+        if not self.find_task(task_id, self.user_id, self.postgre_connection.engine):
+            return {"Error": "Task not found!"}
+
+        update_title_task_query = f"""UPDATE personal_tasks.task SET title = '{self.title}' WHERE id  = {task_id}"""
+
+        try:
+            self.postgre_connection.execute(update_title_task_query)
+            self.postgre_connection.connection.commit()
+            return {"Message": "Task Title Updated successfully!"}, 200
+        except Exception as e:
+            return {"Error in update task title": str(e)}, 400
+        
+    def update_task_desc(self, task_id):
+        ''' This function is used to update a task description '''
+        if not self.find_task(task_id, self.user_id, self.postgre_connection.engine):
+            return {"Error": "Task not found!"}
+
+        update_title_task_query = f"""
+            UPDATE personal_tasks.task 
+            SET description = '{self.desc}'
+            WHERE id  = {task_id}
+        """
+
+        try:
+            self.postgre_connection.execute(update_title_task_query)
+            self.postgre_connection.connection.commit()
+            return {"Message": "Task Description Updated successfully!"}, 200
+        except Exception as e:
+            return {"Error in update task description": str(e)}, 400
+        
+    def update_task_status(self, task_id, task_status):
+        ''' This function is used to update a task status '''
+        if not self.find_task(task_id, self.user_id, self.postgre_connection.engine):
+            return {"Error": "Task not found!"}
+
+        update_title_task_query = f"""
+            UPDATE personal_tasks.task 
+            SET status = {task_status}
+            WHERE id  = {task_id}
+        """
+
+        try:
+            self.postgre_connection.execute(update_title_task_query)
+            self.postgre_connection.connection.commit()
+            return {"Message": "Task Status Updated successfully!"}, 200
+        except Exception as e:
+            return {"Error in update task Status": str(e)}, 400

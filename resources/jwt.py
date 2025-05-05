@@ -5,11 +5,13 @@ import os
 JWT_KEY = os.getenv('JWT_KEY')
 
 def decode_jwt(token):
+    ''' This function is used to decode a JWT Token'''
     jwt_decoded = jwt.decode(token, JWT_KEY, "HS256")
     return jwt_decoded
 
 # This functions is used to generate a JWT.
-def generate(email, full_name, id):
+def generate_jwt(email, full_name, id):
+    ''' This function is used to generate a JWT Token '''
 
     payload = {
         "email": email,
@@ -23,12 +25,15 @@ def generate(email, full_name, id):
     return jwt_token
 
 # This functions is used to validate a JWT.
-def validate(jwt_token):
+def validate_jwt(jwt_token):
+    ''' This Functions is used to valid a JWT Token'''
+
     try:
         decode_jwt(jwt_token)
         return {
             "Success": "Valid token!"
         }
+
     except jwt.ExpiredSignatureError:
         return {
             "Error": "Token Expirou"

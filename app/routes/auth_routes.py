@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from ..models.users import Users
-from resources.encrypt_pass import encrypt
+from resources.encrypt_pass import encrypt_password
 from resources import jwt as _jwt
 
 auth_route = Blueprint('auth', __name__)
@@ -21,7 +21,7 @@ def register_user():
         email     = request.json['email']
         passwd    = request.json['password']
 
-        user = Users(full_name, email, encrypt(passwd))
+        user = Users(full_name, email, encrypt_password(passwd))
         return user.create_user()
     except Exception as e:
         return {"Error": str(e)}
@@ -52,7 +52,7 @@ def login():
         if valid_user != True:
             return valid_user
 
-        jwt = _jwt.generate(str(user_info['email'][0]), str(user_info['full_name'][0]), str(user_info['id'][0]))
+        jwt = _jwt.generate_jwt(str(user_info['email'][0]), str(user_info['full_name'][0]), str(user_info['id'][0]))
         return {"access_token": jwt}, 200
 
     except Exception as e:

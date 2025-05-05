@@ -23,6 +23,7 @@ class Users:
         '''
 
     def valid_user_exist(self):
+        ''' This function is used to valid if a user exist '''
         return pd.read_sql_query(
             sql=text("""SELECT EXISTS(
                             SELECT  
@@ -36,6 +37,7 @@ class Users:
             con=self.postgre_connection.engine)['exists'][0]
 
     def get_user_info(self):
+        ''' This function is used to get a user info '''
         return pd.read_sql_query(
             sql=text("""
                 SELECT
@@ -52,6 +54,7 @@ class Users:
         )
 
     def valid_user_password(self, user_info):
+        ''' This function is used to valid if user password is correct '''
 
         if not user_info['active'][0]:
             return {"Error": "Inactive user"}
@@ -66,7 +69,7 @@ class Users:
     def create_user(self):
         '''This function is used to create a new user '''
 
-        if self.valid_user_exist(self.email):
+        if self.valid_user_exist():
             return {"Error": "Email not available"}
 
         insert_user_query = f"""

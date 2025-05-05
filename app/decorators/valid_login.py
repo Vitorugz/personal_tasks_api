@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import request, Response
-from resources.jwt import validate
+from resources.jwt import validate_jwt
 
 # This function is used to return "Access Denied" if username and password is not correct.
 def unauthorized_response():
@@ -17,9 +17,9 @@ def requires_auth(function):
         if not authorization:
             return unauthorized_response()
         
-        jwt_valid = validate(authorization)
+        jwt_valid = validate_jwt(authorization)
 
-        if "Error" in jwt_valid:
+        if not jwt_valid:
             return jwt_valid
 
         return function(*args, **kwargs)

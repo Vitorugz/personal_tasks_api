@@ -1,9 +1,7 @@
 import bcrypt
 
-def encrypt(password: str):
-    """
-    Encrypt the password using bcrypt.
-    """
+def encrypt_password(password: str):
+    ''' Encrypt the password using bcrypt. '''
     if not isinstance(password, str):
         raise TypeError("password must be a string")
     if not password:
@@ -14,7 +12,7 @@ def encrypt(password: str):
     return senha_hash.decode('utf-8')
 
 def valid_pass(password, hash):
-
+    ''' Check if the password is valid. '''
     password = str(password).encode('utf-8')
     hash = str(hash).encode('utf-8')
 

@@ -1,14 +1,16 @@
-from sqlalchemy import create_engine as _create_engine, text
+import os
 from sqlalchemy.engine import Engine
+from sqlalchemy import create_engine as _create_engine, text
 
 class Postgre:
 
-    def __init__(self, uri):
-        self.uri             = uri
+    def __init__(self):
+        self.uri             = os.getenv('POSTGRE_URI_PRD')
         self.engine          = self._get_engine()
         self._connection     = None
 
     def _get_engine(self) -> Engine:
+        ''' Return a engine. '''
         return _create_engine(self.uri)
 
     def __str__(self):
