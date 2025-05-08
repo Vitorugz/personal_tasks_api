@@ -4,16 +4,14 @@ import pandas as pd
 from resources.encrypt_pass import valid_pass
 import os
 
-POSTGRE_URI = os.getenv('POSTGRE_URI_PRD')
 class Users:
 
     def __init__(self, full_name, email, passwd):
-        postgre_uri =  POSTGRE_URI
 
         self.full_name          = str(full_name)
         self.email              = str(email)
         self.passwd             = passwd
-        self.postgre_connection = postgre.Postgre(postgre_uri)
+        self.postgre_connection = postgre.Postgre()
 
     def __str__(self):
         return f'''
@@ -29,7 +27,7 @@ class Users:
                             SELECT  
                                 1
                             FROM
-                                personal_tasks.users
+                                users
                             WHERE   
                                 email = :email
                         )"""),
@@ -46,7 +44,7 @@ class Users:
                     email,
                     password,
                     active
-                FROM personal_tasks.users
+                FROM users
                 WHERE email = :email
             """),
             params={"email": self.email},
@@ -73,7 +71,7 @@ class Users:
             return {"Error": "Email not available"}
 
         insert_user_query = f"""
-            INSERT INTO personal_tasks.users(full_name, email, password, active)
+            INSERT INTO users(full_name, email, password, active)
             VALUES ('{self.full_name}', '{self.email}', '{self.passwd}', true)
         """
 

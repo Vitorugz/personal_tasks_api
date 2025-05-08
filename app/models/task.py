@@ -3,23 +3,19 @@ from sqlalchemy import text
 import pandas as pd
 import os
 
-POSTGRE_URI = os.getenv('POSTGRE_URI_PRD')
-
 class Task:
 
     def __init__(self, title, desc, user_id):
-        postgre_uri =  POSTGRE_URI
 
         self.title              = title
         self.desc               = desc
         self.user_id            = user_id
-        self.postgre_connection = postgre.Postgre(postgre_uri)
+        self.postgre_connection = postgre.Postgre()
 
     def create_taks(self):
         ''' This function is used to create a new task '''
-
         insert_user_query = f"""
-            INSERT INTO personal_tasks.task(title, description, user_task)
+            INSERT INTO task(title, description, user_task)
             VALUES ('{self.title}', '{self.desc}', '{self.user_id}')
         """
 
@@ -32,9 +28,8 @@ class Task:
 
     def get_tasks(self):
         ''' This function is used to get all tasks of a user '''
-
         return pd.read_sql_query(
-            sql=text("""SELECT * FROM personal_tasks.task WHERE user_task = :user_id"""),
+            sql=text("""SELECT * FROM task WHERE user_task = :user_id"""),
             params={"user_id": self.user_id},
             con=self.postgre_connection.engine
         )
@@ -46,7 +41,7 @@ class Task:
             SELECT EXISTS (
                 SELECT
                     1
-                FROM personal_tasks.task
+                FROM task
                 WHERE id        = :task_id
                 AND   user_task = :user_id
             )
@@ -60,9 +55,8 @@ class Task:
 
         if not self.find_task(task_id, self.user_id, self.postgre_connection.engine):
             return {"Error": "Task not found for your user!"}
-
         delete_task_query = f"""
-            DELETE FROM personal_tasks.task
+            DELETE FROM task
             WHERE id        = {task_id}
             AND   user_task = {self.user_id}
         """
@@ -78,8 +72,7 @@ class Task:
         ''' This function is used to update a task title '''
         if not self.find_task(task_id, self.user_id, self.postgre_connection.engine):
             return {"Error": "Task not found!"}
-
-        update_title_task_query = f"""UPDATE personal_tasks.task SET title = '{self.title}' WHERE id  = {task_id}"""
+        update_title_task_query = f"""UPDATE task SET title = '{self.title}' WHERE id  = {task_id}"""
 
         try:
             self.postgre_connection.execute(update_title_task_query)
@@ -92,9 +85,8 @@ class Task:
         ''' This function is used to update a task description '''
         if not self.find_task(task_id, self.user_id, self.postgre_connection.engine):
             return {"Error": "Task not found!"}
-
         update_title_task_query = f"""
-            UPDATE personal_tasks.task 
+            UPDATE task 
             SET description = '{self.desc}'
             WHERE id  = {task_id}
         """
@@ -112,7 +104,7 @@ class Task:
             return {"Error": "Task not found!"}
 
         update_title_task_query = f"""
-            UPDATE personal_tasks.task 
+            UPDATE task 
             SET status = {task_status}
             WHERE id  = {task_id}
         """
