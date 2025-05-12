@@ -22,6 +22,9 @@ def create_task():
 
     user_info = decode_jwt(jwt)
 
+    if "Error" in user_info:
+        return user_info
+
     task = Task(task_title, task_desc, user_info['id_user'])
 
     return task.create_taks()
@@ -34,6 +37,9 @@ def get_tasks():
     jwt = request.headers.get('Authorization')
 
     user_info = decode_jwt(jwt)
+
+    if "Error" in user_info:
+        return user_info
 
     tasks = []
 
@@ -62,6 +68,9 @@ def delete_task():
 
     user_info = decode_jwt(jwt)
 
+    if "Error" in user_info:
+        return user_info
+
     task = Task('', '', user_info['id_user'])
 
     return task.delete_task(task_id)
@@ -78,6 +87,9 @@ def update_task():
         return {"Error": "Please, informe task_id"}, 400
     
     user_info = decode_jwt(jwt)
+
+    if "Error" in user_info:
+        return user_info
 
     if 'title' in request.json:
         task = Task(request.json['title'], '', user_info['id_user'])

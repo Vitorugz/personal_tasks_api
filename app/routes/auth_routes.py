@@ -53,6 +53,9 @@ def login():
             return valid_user
 
         jwt = _jwt.generate_jwt(str(user_info['email'][0]), str(user_info['full_name'][0]), str(user_info['id'][0]))
+
+        user.update_last_login_date(user_info['id'][0])
+
         return {"access_token": jwt}, 200
 
     except Exception as e:

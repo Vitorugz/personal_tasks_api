@@ -19,7 +19,7 @@ def requires_auth(function):
         
         jwt_valid = validate_jwt(authorization)
 
-        if not jwt_valid:
+        if "Error" in jwt_valid:
             return jwt_valid
 
         return function(*args, **kwargs)

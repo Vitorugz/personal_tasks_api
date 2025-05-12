@@ -81,3 +81,19 @@ class Users:
             return {"Message": "user created successfully"}, 200
         except Exception as e:
             return {"Error in insert new user": str(e)}, 400
+
+    def update_last_login_date(self, user_id):
+        ''' This function is used to update the last login date of a user '''
+
+        update_last_login_date_query = f"""
+            UPDATE users
+            SET last_login_date = now()
+            WHERE id = {user_id}
+        """
+
+        try:
+            self.postgre_connection.execute(update_last_login_date_query)
+            self.postgre_connection.connection.commit()
+            return True
+        except Exception as e:
+            return {"Error in update last login date": str(e)}, 400

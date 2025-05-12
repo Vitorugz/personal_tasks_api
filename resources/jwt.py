@@ -29,17 +29,13 @@ def validate_jwt(jwt_token):
     ''' This Functions is used to valid a JWT Token'''
 
     try:
-        decode_jwt(jwt_token)
+        jwt_decoded = jwt.decode(jwt_token, JWT_KEY, "HS256")
+        return jwt_decoded
+    except jwt.exceptions.ExpiredSignatureError:
         return {
-            "Success": "Valid token!"
+            "Error": "Token Expirado"
         }
-
-    except jwt.ExpiredSignatureError:
-        return {
-            "Error": "Token Expirou"
-        }
-
-    except jwt.InvalidTokenError:
+    except jwt.exceptions.InvalidTokenError:
         return {
             "Error": "Token Inválido"
         }
