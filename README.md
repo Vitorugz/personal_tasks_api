@@ -1,7 +1,7 @@
 
 # 📌 TaskManagerAPI
 
-API RESTful desenvolvida em Python com Flask para gerenciamento de tarefas pessoais. Cada usuário pode criar, listar, editar e excluir suas próprias tarefas de forma segura e organizada. O sistema utiliza autenticação JWT, criptografia de senhas e conexão com banco de dados PostgreSQL.
+API RESTful desenvolvida em Python com Flask para gerenciamento de tarefas pessoais. Cada usuário pode criar, listar, editar e excluir suas próprias tarefas de forma segura e organizada. O sistema utiliza autenticação JWT, criptografia de senhas e conexão com banco de dados PostgreSQL, além de contar com um Dockerfile e um docker-compose para maior facilidade de uso.
 
 ---
 
@@ -24,12 +24,11 @@ API RESTful desenvolvida em Python com Flask para gerenciamento de tarefas pesso
 
 - Python 3.12 ou superior
 - PostgreSQL instalado e rodando
-- Variáveis de ambiente no arquivo `.env`:
+- Docker instalado:
   
 ```env
 JWT_KEY=chave_secreta
-POSTGRE_URI_DEV=postgresql://usuario:senha@localhost:5432/seubanco
-POSTGRE_URI_PRD=...
+POSTGRE_URI_PRD=postgresql://usuario:senha@localhost:5432/seubanco
 ```
 
 ### 📥 Instalação
@@ -41,40 +40,15 @@ git clone https://github.com/Vitorugz/personal_tasks_api.git
 # Acesse o diretório
 cd personal_tasks_api
 
-# Crie e ative um ambiente virtual (opcional)
-python -m venv venv
-source venv/bin/activate  # Linux/macOS
-venv\Scripts\activate     # Windows
-
-# Instale as dependências
-pip install -r requirements.txt
-
-# Execute a aplicação
-python run.py
+# Build seu docker compose
+docker-compose up --build
 ```
 
-### 🗄️ Estrutura das Tabelas (PostgreSQL)
+### Dentro do arquivos docker-compose.yml, configure as variáveis de ambiente:
+![image](https://github.com/user-attachments/assets/2df4dfed-aaca-410c-b2f8-cc5e1ae06757)
 
-```sql
-CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  full_name VARCHAR(170) NOT NULL,
-  email VARCHAR(100) NOT NULL UNIQUE,
-  password VARCHAR(128) NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW(),
-  active BOOLEAN DEFAULT TRUE
-);
-
-CREATE TABLE task (
-  id SERIAL PRIMARY KEY,
-  title VARCHAR(100) NOT NULL,
-  description VARCHAR(255) NOT NULL,
-  status INT DEFAULT 0,
-  user_task INT NOT NULL,
-  FOREIGN KEY (user_task) REFERENCES users(id) ON DELETE CASCADE
-);
-```
+### Caso queira, mude as configurações do banco de dados também:
+![image](https://github.com/user-attachments/assets/015aea5e-8aa0-432c-9d06-67546a069743)
 
 ---
 
@@ -86,7 +60,7 @@ Esta API utiliza **JWT (JSON Web Token)** para autenticação.
 - Envie esse token no **header** `Authorization` com o prefixo `Bearer` em todas as requisições protegidas:
 
 ```http
-Authorization: Bearer seu_token_aqui
+Authorization: seu_token_aqui
 ```
 
 ---
@@ -138,7 +112,7 @@ Cria uma nova tarefa. (Autenticação obrigatória)
 
 #### Headers
 ```http
-Authorization: Bearer seu_token
+Authorization: seu_token
 ```
 
 #### Request
@@ -156,7 +130,19 @@ Retorna todas as tarefas do usuário autenticado.
 
 #### Headers
 ```http
-Authorization: Bearer seu_token
+Authorization: seu_token
+```
+
+### Response
+```json
+[
+    {
+        "task_id": 1,
+        "title": "Estudar Flask",
+        "description": "Focar nos decorators e blueprints",
+        "task_status": 0
+    }
+]
 ```
 
 ---
@@ -166,7 +152,7 @@ Deleta uma tarefa específica do usuário autenticado.
 
 #### Headers
 ```http
-Authorization: Bearer seu_token
+Authorization: seu_token
 ```
 
 ---
