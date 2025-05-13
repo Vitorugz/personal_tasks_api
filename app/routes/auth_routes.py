@@ -31,7 +31,7 @@ def register_user():
 
         mail = Mail()
 
-        mail.send(email, "Welcome to the API", "You have successfully registered in the API")
+        mail.send_mail_new_user(full_name, email)
 
         return create_user
     except Exception as e:

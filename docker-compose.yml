@@ -9,7 +9,7 @@ services:
       - postgresDB
     environment:
       - JWT_KEY=${JWT_KEY}
-      - POSTGRE_URI_PRD={POSTGRE_URI_PRD}
+      - POSTGRE_URI_PRD=${POSTGRE_URI_PRD}
   
   postgresDB:
     image: postgres:14
