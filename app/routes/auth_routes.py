@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from ..models.users import Users
 from resources.encrypt_pass import encrypt_password
 from resources import jwt as _jwt
+from resources.mail import Mail
 
 auth_route = Blueprint('auth', __name__)
 
@@ -22,7 +23,17 @@ def register_user():
         passwd    = request.json['password']
 
         user = Users(full_name, email, encrypt_password(passwd))
-        return user.create_user()
+
+        create_user = user.create_user()
+
+        if 'Error' in create_user:
+            return create_user
+
+        mail = Mail()
+
+        mail.send(email, "Welcome to the API", "You have successfully registered in the API")
+
+        return create_user
     except Exception as e:
         return {"Error": str(e)}
 
