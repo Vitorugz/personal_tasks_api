@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
 	password varchar(128) NOT NULL,
 	created_at timestamptz DEFAULT now(),
 	updated_at timestamptz DEFAULT now(),
-	last_login_at timestamptz,
+	last_login_date timestamptz,
 	active boolean DEFAULT true
 );
 
