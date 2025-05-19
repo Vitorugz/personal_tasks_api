@@ -68,6 +68,23 @@ class Task:
         except Exception as e:
             return {"Error in delete task": str(e)}, 400
 
+    def update_fields(self, task_id, fields):
+        try:
+            # Exemplo usando SQL diretamente (adaptar conforme seu ORM ou método atual)
+            set_clause = ", ".join([f"{key} = %s" for key in fields.keys()])
+            values = list(fields.values())
+
+            sql = f"UPDATE tasks SET {set_clause} WHERE id = %s AND user_id = %s"
+            values.append(task_id)
+            values.append(self.user_id)
+
+            # executar a query com seus métodos usuais
+            self.postgre_connection.execute(sql, values)
+            self.postgre_connection.connection.commit()
+            return {"Message": "Task updated successfully"}
+        except Exception as e:
+            return {"Error": str(e)}, 500
+
     def update_task_title(self, task_id):
         ''' This function is used to update a task title '''
         if not self.find_task(task_id, self.user_id, self.postgre_connection.engine):

@@ -85,25 +85,25 @@ def update_task():
 
     if not task_id:
         return {"Error": "Please, informe task_id"}, 400
-    
-    user_info = decode_jwt(jwt)
 
+    user_info = decode_jwt(jwt)
     if "Error" in user_info:
         return user_info
 
-    if 'title' in request.json:
-        task = Task(request.json['title'], '', user_info['id_user'])
-    
-        return task.update_task_title(task_id)
-    if 'description' in request.json:
-        task = Task('', request.json['description'], user_info['id_user'])
-    
-        return task.update_task_desc(task_id)
+    data = request.json
+    if not data:
+        return {"Error": "Please, inform any field to change"}, 400
 
-    if 'status' in request.json:
-        task = Task('', '', user_info['id_user'])
-    
-        return task.update_task_status(task_id, request.json['status'])
+    allowed_fields = ['title', 'description', 'status']
+    fields_to_update = {k: v for k, v in data.items() if k in allowed_fields}
 
-    else:
-        return {"Message": "Please, inform any field to change"}, 400
+    if not fields_to_update:
+        return {"Message": "No valid fields provided to update"}, 400
+
+    task = Task(
+        title=fields_to_update.get('title', ''),
+        description=fields_to_update.get('description', ''),
+        user_id=user_info['id_user']
+    )
+
+    return task.update_fields(task_id, fields_to_update)
