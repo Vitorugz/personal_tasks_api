@@ -176,19 +176,9 @@ Authorization: Bearer seu_token
 
 ---
 
-## 📈 Possíveis Evoluções Futuras
-
-- Sistema de categorias ou tags
-- Filtros por status de tarefas
-- Painel web com frontend em React ou Angular
-- Notificações por e-mail
-- Deploy da API em ambiente de produção (Render, Railway, etc.)
-
----
-
 ## 👨‍💻 Autor
 
-Desenvolvido por **Vitor** — Desenvolvedor Back-end Python Jr.  
+Desenvolvido por **Vitor** — Desenvolvedor Back-end Python.  
 📫 [linkedin.com/in/vitordelimacosta](https://www.linkedin.com/in/vitordelimacosta)  
 
 ---
